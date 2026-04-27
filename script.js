@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
 function showNotification(message, type) {
     const notif = document.createElement('div');
     notif.className = `notification ${type}`;
