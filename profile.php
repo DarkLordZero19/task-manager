@@ -55,7 +55,6 @@ $user = $stmt->fetch();
     <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
     <p><strong>Роль:</strong> <?= htmlspecialchars($user['role']) ?></p>
 </div>
-
 <div class="card">
     <h3>Изменить имя</h3>
     <form method="post">
@@ -63,7 +62,6 @@ $user = $stmt->fetch();
         <button type="submit" name="update_name" class="btn">Обновить имя</button>
     </form>
 </div>
-
 <div class="card">
     <h3>Изменить пароль</h3>
     <form method="post">
