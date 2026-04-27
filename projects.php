@@ -5,7 +5,6 @@ $action = $_GET['action'] ?? '';
 $project_id = (int)($_GET['id'] ?? 0);
 $error = '';
 $success = '';
-
 if ($action === 'delete' && $project_id) {
     $stmt = $pdo->prepare("DELETE FROM projects WHERE id = ? AND owner_id = ?");
     if ($stmt->execute([$project_id, $user_id])) {
@@ -15,7 +14,6 @@ if ($action === 'delete' && $project_id) {
         $error = 'Не удалось удалить проект';
     }
 }
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title']);
     $description = trim($_POST['description']);
@@ -37,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
 $project = null;
 if ($action === 'edit' && $project_id) {
     $stmt = $pdo->prepare("SELECT * FROM projects WHERE id = ? AND owner_id = ?");

@@ -92,7 +92,6 @@ $tasks = $stmt->fetchAll();
     </table>
 </div>
 
-<!-- Комментарии -->
 <?php foreach($tasks as $task): 
     $stmt = $pdo->prepare("SELECT c.*, u.name as author_name FROM comments c JOIN users u ON c.user_id = u.id WHERE c.task_id = ? ORDER BY c.created_at ASC");
     $stmt->execute([$task['id']]);
