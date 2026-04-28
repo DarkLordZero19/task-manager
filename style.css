@@ -164,11 +164,25 @@ table {
     border-radius: 20px;
     overflow: hidden;
     background: white;
+    table-layout: fixed;
 }
-th, td {
-    padding: 1rem 1rem;
+th:nth-child(1), td:nth-child(1) { width: 15%; }  /* Задача */
+th:nth-child(2), td:nth-child(2) { width: 28%; }  /* Описание */
+th:nth-child(3), td:nth-child(3) { width: 15%; }  /* Исполнитель */
+th:nth-child(4), td:nth-child(4) { width: 14%; }  /* Дедлайн */
+th:nth-child(5), td:nth-child(5) { width: 13%; }  /* Статус */
+th:nth-child(6), td:nth-child(6) { width: 15%; }  /* Действия */
+
+td, th {
+    padding: 1rem 0.8rem;
     text-align: left;
     border-bottom: 1px solid #e2e8f0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+td:nth-child(4), th:nth-child(4) {
+    white-space: nowrap;
 }
 th {
     background: #f8fafc;
@@ -184,12 +198,9 @@ tr:last-child td {
 tr:hover td {
     background-color: #f1f5f9;
 }
-td[data-label="Дедлайн"] {
-    text-align: left;
-}
-td.overdue {
-    text-align: center;
-    text-align: left;
+.overdue {
+    color: #e74c3c;
+    font-weight: bold;
 }
 .status-badge {
     display: inline-block;
@@ -206,10 +217,6 @@ td.overdue {
 .status-done { background: #10b981; }
 .status-cancelled { background: #ef4444; }
 
-.overdue {
-    color: #e74c3c;
-    font-weight: bold;
-}
 .projects-grid {
     display: flex;
     flex-wrap: wrap;
@@ -302,6 +309,9 @@ td.overdue {
     .filter-bar input, .filter-bar select {
         width: 100%;
     }
+    table {
+        table-layout: auto;
+    }
     table, thead, tbody, th, td, tr {
         display: block;
     }
@@ -317,19 +327,28 @@ td.overdue {
     td {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         padding: 0.8rem;
         border-bottom: 1px solid #e2e8f0;
         gap: 0.5rem;
+        width: 100% !important;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        font-size: 0.8rem;
     }
     td:before {
         content: attr(data-label);
         font-weight: 700;
-        width: 40%;
+        width: 35%;
         color: #1e293b;
+        flex-shrink: 0;
     }
     td:last-child {
         border-bottom: none;
+    }
+    td:nth-child(4) {
+        white-space: normal;
     }
     td[data-label="Дедлайн"] {
         text-align: left;
