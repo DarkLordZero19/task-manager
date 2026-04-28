@@ -82,8 +82,8 @@ $tasks = $stmt->fetchAll();
                 </form>
             </td>
             <td data-label="Действия">
-                <a href="task_form.php?edit=<?= $task['id'] ?>&project_id=<?= $project_id ?>" class="btn">✏️</a>
-                <a href="task_form.php?delete=<?= $task['id'] ?>&project_id=<?= $project_id ?>" class="btn btn-danger" onclick="return confirm('Удалить задачу?')">🗑️</a>
+                <a href="task_form.php?edit=<?= $task['id'] ?>&project_id=<?= $project_id ?>" class="btn">Редактировать</a>
+                <a href="task_form.php?delete=<?= $task['id'] ?>&project_id=<?= $project_id ?>" class="btn btn-danger" onclick="return confirm('Удалить задачу?')">Удалить</a>
             </td>
         <tr>
         <?php endforeach; ?>
