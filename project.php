@@ -70,7 +70,7 @@ $tasks = $stmt->fetchAll();
             <td data-label="Исполнитель"><?= htmlspecialchars($task['executor_name']) ?></td>
             <td data-label="Дедлайн" class="<?= $overdue ? 'overdue' : '' ?>"><?= date('d.m.Y H:i', strtotime($task['deadline'])) ?></td>
             <td data-label="Статус" class="status-cell">
-                <form class="status-form" method="post" action="task_form.php?action=status_ajax" style="display:inline;">
+                <form method="post" action="task_form.php" style="display:inline;">
                     <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
                     <input type="hidden" name="project_id" value="<?= $project_id ?>">
                     <select name="status" onchange="this.form.submit()">
@@ -91,7 +91,6 @@ $tasks = $stmt->fetchAll();
         </tbody>
     </table>
 </div>
-
 <?php foreach($tasks as $task): 
     $stmt = $pdo->prepare("SELECT c.*, u.name as author_name FROM comments c JOIN users u ON c.user_id = u.id WHERE c.task_id = ? ORDER BY c.created_at ASC");
     $stmt->execute([$task['id']]);
