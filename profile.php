@@ -22,21 +22,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
         $stmt->execute([$user_id]);
         $user = $stmt->fetch();
-        if (password_verify($old, $user['password'])) {
-            if ($new === $confirm && strlen($new) >= 6) {
+        if (!password_verify($old, $user['password'])) {
+            $error = 'Неверный текущий пароль';
+        } else {
+            if (empty($new)) {
+                $error = 'Новый пароль не может быть пустым';
+            } elseif (strlen($new) < 6) {
+                $error = 'Новый пароль должен содержать не менее 6 символов';
+            } elseif ($new !== $confirm) {
+                $error = 'Неверное подтверждение пароля';
+            } else {
                 $hash = password_hash($new, PASSWORD_BCRYPT);
                 $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
                 $stmt->execute([$hash, $user_id]);
                 $success = 'Пароль изменён';
-            } else {
-                $error = 'Новый пароль должен быть не менее 6 символов и совпадать';
             }
-        } else {
-            $error = 'Неверный текущий пароль';
         }
     }
 }
-
 $stmt = $pdo->prepare("SELECT name, email, role FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
