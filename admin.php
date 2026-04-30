@@ -22,7 +22,7 @@ $users = $pdo->query("SELECT id, name, email, role, created_at FROM users ORDER 
 ?>
 <h1>Управление пользователями</h1>
 <div class="card">
-    <table>
+    <table class="admin-table">
         <thead><tr><th>ID</th><th>Имя</th><th>Email</th><th>Роль</th><th>Дата регистрации</th><th>Действия</th></tr></thead>
         <tbody>
         <?php foreach($users as $u): ?>

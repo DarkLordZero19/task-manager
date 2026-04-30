@@ -198,6 +198,9 @@ tr:last-child td {
 tr:hover td {
     background-color: #f1f5f9;
 }
+.admin-table tr:last-child td {
+    border-bottom: 1px solid #e2e8f0;
+}
 .overdue {
     color: #e74c3c;
     font-weight: bold;
