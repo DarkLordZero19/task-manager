@@ -109,7 +109,6 @@ $tasks = $stmt->fetchAll();
         </div>
         <?php endforeach; ?>
     </div>
-    <!-- Обычная синхронная форма без AJAX -->
     <form method="post" action="task_form.php">
         <input type="hidden" name="add_comment" value="1">
         <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
