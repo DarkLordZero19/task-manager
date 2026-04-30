@@ -1,13 +1,26 @@
-<?php require_once 'header.php'; ?>
-<?php require_once 'db.php'; 
+<?php
+require_once 'header.php';
+require_once 'db.php';
+
 $user_id = $_SESSION['user_id'];
 $edit_id = (int)($_GET['edit'] ?? 0);
 $delete_id = (int)($_GET['delete'] ?? 0);
 $project_id = (int)($_GET['project_id'] ?? 0);
 $error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_comment'])) {
+    $task_id = (int)($_POST['task_id'] ?? 0);
+    $project_id = (int)($_POST['project_id'] ?? 0);
+    $comment_text = trim($_POST['comment_text'] ?? '');
+    if ($task_id && $comment_text) {
+        $stmt = $pdo->prepare("INSERT INTO comments (text, task_id, user_id) VALUES (?, ?, ?)");
+        $stmt->execute([$comment_text, $task_id, $user_id]);
+    }
+    header("Location: project.php?id=$project_id");
+    exit;
+}
 if (isset($_GET['action']) && $_GET['action'] === 'status_ajax' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
-    $task_id = (int)$_POST['task_id'];
+    $task_id = (int)($_POST['task_id'] ?? 0);
     $status = $_POST['status'] ?? '';
     if (in_array($status, ['новая','в работе','выполнена','отменена'])) {
         $stmt = $pdo->prepare("UPDATE tasks SET status = ? WHERE id = ?");
@@ -24,32 +37,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'status_ajax' && $_SERVER['REQ
     }
     exit;
 }
-if (isset($_GET['action']) && $_GET['action'] === 'comment_ajax' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json');
-    $task_id = (int)$_POST['task_id'];
-    $text = trim($_POST['comment_text']);
-    $pid = (int)$_POST['project_id'];
-    if ($text) {
-        $stmt = $pdo->prepare("INSERT INTO comments (text, task_id, user_id) VALUES (?, ?, ?)");
-        $stmt->execute([$text, $task_id, $user_id]);
-        echo json_encode([
-            'success' => true,
-            'author' => $_SESSION['user_name'],
-            'text' => nl2br(htmlspecialchars($text)),
-            'date' => date('d.m.Y H:i')
-        ]);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Пустой комментарий']);
-    }
-    exit;
-}
 if ($delete_id) {
     $stmt = $pdo->prepare("DELETE FROM tasks WHERE id = ? AND (project_id IN (SELECT id FROM projects WHERE owner_id = ?) OR ? = 'admin')");
     $admin = ($_SESSION['role'] === 'admin') ? 'admin' : '';
-    if ($stmt->execute([$delete_id, $user_id, $admin])) {
-        header("Location: project.php?id=$project_id");
-        exit;
-    } else $error = 'Не удалось удалить задачу';
+    $stmt->execute([$delete_id, $user_id, $admin]);
+    header("Location: project.php?id=$project_id");
+    exit;
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status']) && isset($_POST['task_id']) && !isset($_GET['action'])) {
     $task_id = (int)$_POST['task_id'];
@@ -57,17 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status']) && isset($_
     $pid = (int)$_POST['project_id'];
     $stmt = $pdo->prepare("UPDATE tasks SET status = ? WHERE id = ?");
     $stmt->execute([$status, $task_id]);
-    header("Location: project.php?id=$pid");
-    exit;
-}
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_text']) && isset($_POST['task_id']) && !isset($_GET['action'])) {
-    $task_id = (int)$_POST['task_id'];
-    $text = trim($_POST['comment_text']);
-    $pid = (int)$_POST['project_id'];
-    if ($text) {
-        $stmt = $pdo->prepare("INSERT INTO comments (text, task_id, user_id) VALUES (?, ?, ?)");
-        $stmt->execute([$text, $task_id, $user_id]);
-    }
     header("Location: project.php?id=$pid");
     exit;
 }
@@ -92,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['title'])) {
         exit;
     }
 }
-
 $task = null;
 if ($edit_id) {
     $stmt = $pdo->prepare("SELECT * FROM tasks WHERE id = ?");

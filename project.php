@@ -59,33 +59,35 @@ $tasks = $stmt->fetchAll();
 </div>
 <div class="card">
     <table>
-        <thead><tr><th>Задача</th><th>Описание</th><th>Исполнитель</th><th>Дедлайн</th><th>Статус</th><th>Действия</th></tr></thead>
+        <thead>
+            <tr><th>Задача</th><th>Описание</th><th>Исполнитель</th><th>Дедлайн</th><th>Статус</th><th>Действия</th></tr>
+        </thead>
         <tbody>
         <?php foreach($tasks as $task): 
             $overdue = ($task['deadline'] < date('Y-m-d H:i:s') && !in_array($task['status'], ['выполнена','отменена']));
         ?>
-        <tr>
-            <td data-label="Задача"><?= htmlspecialchars($task['title']) ?></td>
-            <td data-label="Описание"><?= nl2br(htmlspecialchars($task['description'])) ?></td>
-            <td data-label="Исполнитель"><?= htmlspecialchars($task['executor_name']) ?></td>
-            <td data-label="Дедлайн" class="<?= $overdue ? 'overdue' : '' ?>"><?= date('d.m.Y H:i', strtotime($task['deadline'])) ?></td>
-            <td data-label="Статус" class="status-cell">
-                <form method="post" action="task_form.php" style="display:inline;">
-                    <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
-                    <input type="hidden" name="project_id" value="<?= $project_id ?>">
-                    <select name="status" onchange="this.form.submit()">
-                        <option value="новая" <?= $task['status']=='новая'?'selected':'' ?>>Новая</option>
-                        <option value="в работе" <?= $task['status']=='в работе'?'selected':'' ?>>В работе</option>
-                        <option value="выполнена" <?= $task['status']=='выполнена'?'selected':'' ?>>Выполнена</option>
-                        <option value="отменена" <?= $task['status']=='отменена'?'selected':'' ?>>Отменена</option>
-                    </select>
-                </form>
-            </td>
-            <td data-label="Действия">
-                <a href="task_form.php?edit=<?= $task['id'] ?>&project_id=<?= $project_id ?>" class="btn">✏️</a>
-                <a href="task_form.php?delete=<?= $task['id'] ?>&project_id=<?= $project_id ?>" class="btn btn-danger" onclick="return confirm('Удалить задачу?')">🗑️</a>
-            </td>
-        <tr>
+            <tr>
+                <td data-label="Задача"><?= htmlspecialchars($task['title']) ?></td>
+                <td data-label="Описание"><?= nl2br(htmlspecialchars($task['description'])) ?></td>
+                <td data-label="Исполнитель"><?= htmlspecialchars($task['executor_name']) ?></td>
+                <td data-label="Дедлайн" class="<?= $overdue ? 'overdue' : '' ?>"><?= date('d.m.Y H:i', strtotime($task['deadline'])) ?></td>
+                <td data-label="Статус" class="status-cell">
+                    <form method="post" action="task_form.php" style="display:inline;">
+                        <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
+                        <input type="hidden" name="project_id" value="<?= $project_id ?>">
+                        <select name="status" onchange="this.form.submit()">
+                            <option value="новая" <?= $task['status']=='новая'?'selected':'' ?>>Новая</option>
+                            <option value="в работе" <?= $task['status']=='в работе'?'selected':'' ?>>В работе</option>
+                            <option value="выполнена" <?= $task['status']=='выполнена'?'selected':'' ?>>Выполнена</option>
+                            <option value="отменена" <?= $task['status']=='отменена'?'selected':'' ?>>Отменена</option>
+                        </select>
+                    </form>
+                </td>
+                <td data-label="Действия">
+                    <a href="task_form.php?edit=<?= $task['id'] ?>&project_id=<?= $project_id ?>" class="btn">✏️</a>
+                    <a href="task_form.php?delete=<?= $task['id'] ?>&project_id=<?= $project_id ?>" class="btn btn-danger" onclick="return confirm('Удалить задачу?')">🗑️</a>
+                </td>
+            </tr>
         <?php endforeach; ?>
         <?php if(empty($tasks)) echo "<tr><td colspan='6'>Задач не найдено</td></tr>"; ?>
         </tbody>
@@ -107,7 +109,9 @@ $tasks = $stmt->fetchAll();
         </div>
         <?php endforeach; ?>
     </div>
-    <form class="comment-form" method="post" action="task_form.php?action=comment_ajax">
+    <!-- Обычная синхронная форма без AJAX -->
+    <form method="post" action="task_form.php">
+        <input type="hidden" name="add_comment" value="1">
         <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
         <input type="hidden" name="project_id" value="<?= $project_id ?>">
         <textarea name="comment_text" rows="2" placeholder="Добавить комментарий..." required></textarea>
